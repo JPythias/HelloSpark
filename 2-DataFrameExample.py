@@ -2,8 +2,8 @@
 # date:02/03/2024
 
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
 
-# master是session的入口，可以是本地、yarn或者mesos
 spark = SparkSession.builder\
     .appName("HelloSpark")\
     .master("local")\
@@ -27,3 +27,14 @@ df = spark.read\
 
 df.printSchema()# 打印schema表格
 df.show()# 展示数据（头20条数据）
+
+# 3. select
+result = df.select('No', 'year', 'month', 'day', 'PM_Dongsi')
+
+# 4.group-by
+result = df.select('year', 'month', 'PM_Dongsi')\
+    .where(col('PM_Dongsi') != 'NA')\
+    .groupby('year')\
+    .count()
+
+result.show()
